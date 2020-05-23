@@ -14,14 +14,16 @@ const todoSchema = new Schema({
     ref: 'Label'
   },
   status: {
-    type: Schema.Types.ObjectId,
-    ref: 'Status'
-
+    type: String,
+    required: true,
+    default: 'New',
+    enum: ['New', 'In progress', 'Completed']
   },
   priority: {
     type: String,
     required: true,
-    enum: ['P1', 'P2', 'P3', 'P4'],
+    default: 'P1',
+    enum: ['P1', 'P2', 'P3', 'P4']
   },
   due_date: {
     type: Date
