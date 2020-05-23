@@ -2,28 +2,52 @@ const Todo = require('../models/todo.model')
 const Label = require('../models/label.model')
 
 module.exports.todo_create = async function(req, res) {
-  const {
-    text,
-    due_date,
-    status,
-    priority,
-    label
-  } = req.body
-  const created_date = new Date()
-  const labelId = Label.find({
-    text: label
-  })
-  const todo = await Todo.create({
-    text,
-    due_date,
-    status,
-    priority,
-    created_date,
-    labelId
-  })
-  res.json(todo)
+  try {
+    const {
+      text,
+      due_date,
+      status,
+      priority,
+      label
+    } = req.body
+    const created_date = new Date()
+    const todo = {
+      text,
+      due_date,
+      status,
+      priority,
+      label,
+      created_date
+    }
+    if (label) {
+      labelData = await Label.find({
+        text: label
+      })
+      todo.label = labelData._id
+    }
+    const createdTodo = await Todo.create({
+      todo
+    })
+    res.json({
+      success: true,
+      data: createdTodo
+    })
+
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error
+    })
+  }
+
 }
 module.exports.todo_list = async function(req, res) {
-  const todoList = await Todo.find({})
-  res.json(todoList)
+  try {
+    const todoList = await Todo.find({})
+    res.json(todoList)
+
+  } catch (error) {
+    res.json(error)
+  }
+
 }
