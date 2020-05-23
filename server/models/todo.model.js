@@ -10,8 +10,8 @@ const todoSchema = new Schema({
     required: true
   },
   label: {
-    type: Schema.Types.ObjectId,
-    ref: 'Label'
+    type: String,
+    enum: ['Personal', 'Work', 'Shopping', 'Others']
   },
   status: {
     type: String,

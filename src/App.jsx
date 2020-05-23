@@ -4,8 +4,6 @@ import './App.css'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
-import Blank from './components/Blank/Blank'
-
 import Master_Detail from './components/Master_Detail/Master_Detail'
 
 import List from './components/List/List'
