@@ -13,7 +13,7 @@ const Form = (params) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const data = { text: textField, due: dueField }
+    const data = { text: textField, due_date: dueField }
     await fetch('http://localhost:3001/api/todo', {
       method: 'POST',
       headers: {
