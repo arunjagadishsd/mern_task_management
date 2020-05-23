@@ -20,7 +20,7 @@ module.exports.todo_create = async function(req, res) {
       created_date
     }
     if (label) {
-      labelData = await Label.find({
+      const labelData = await Label.find({
         text: label
       })
       todo.label = labelData._id
