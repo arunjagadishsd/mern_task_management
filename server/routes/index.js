@@ -10,6 +10,7 @@ router.get(CONSTANTS.ENDPOINT.LIST, function(req, res) {
 })
 
 router.post('/todo', todo_controller.todo_create);
+router.get('/todo', todo_controller.todo_list);
 router.post(CONSTANTS.ENDPOINT.LIST, function(req, res) {
   let listItem = {
     text: req.body.text,

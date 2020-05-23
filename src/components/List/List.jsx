@@ -1,41 +1,43 @@
-﻿import React, { useState } from "react";
-import ListItem from "./ListItem";
-import Form from "./Form";
-import WarningMessage from "../WarningMessage";
-import CONSTANTS from "../../constants";
+﻿import React, { useState } from 'react'
+import ListItem from './ListItem'
+import Form from './Form'
+import WarningMessage from '../WarningMessage'
+import CONSTANTS from '../../constants'
 
 const List = () => {
-  const [items, setItems] = useState([]);
-  const [warningMessage, setWarningMessage] = useState({warningMessageOpen: false, warningMessageText: ""});
+  const [items, setItems] = useState([])
+  const [warningMessage, setWarningMessage] = useState({
+    warningMessageOpen: false,
+    warningMessageText: ''
+  })
 
   const getItems = () => {
-    let promiseList = fetch(CONSTANTS.ENDPOINT.LIST)
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
-      })
-    return promiseList;
+    let promiseList = fetch(CONSTANTS.ENDPOINT.LIST).then((response) => {
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+      return response.json()
+    })
+    return promiseList
   }
 
   const deleteItem = (item) => {
-    fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, { method: "DELETE" })
-      .then(response => {
+    fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, { method: 'DELETE' })
+      .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error(response.statusText)
         }
-        return response.json();
+        return response.json()
       })
-      .then(result => {
-        setItems(items.filter(item => item._id !== result._id));
+      .then((result) => {
+        setItems(items.filter((item) => item._id !== result._id))
       })
-      .catch(error => {
+      .catch((error) => {
         setWarningMessage({
           warningMessageOpen: true,
           warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_DELETE} ${error}`
-        });
-      });
+        })
+      })
   }
 
   const addItem = (textField) => {
@@ -44,62 +46,64 @@ const List = () => {
       setWarningMessage({
         warningMessageOpen: true,
         warningMessageText: CONSTANTS.ERROR_MESSAGE.LIST_EMPTY_MESSAGE
-      });
-      return;
+      })
+      return
     }
 
     fetch(CONSTANTS.ENDPOINT.LIST, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text: textField
       })
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error(response.statusText)
         }
-        return response.json();
+        return response.json()
       })
-      .then(itemAdded =>{
-        setItems([itemAdded, ...items]);
+      .then((itemAdded) => {
+        setItems([itemAdded, ...items])
       })
-      .catch(error =>
+      .catch((error) =>
         setWarningMessage({
           warningMessageOpen: true,
           warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_ADD} ${error}`
         })
-      );
-  };
+      )
+  }
 
   const closeWarningMessage = () => {
     setWarningMessage({
       warningMessageOpen: false,
-      warningMessageText: ""
-    });
-  };
+      warningMessageText: ''
+    })
+  }
 
   React.useEffect(() => {
     getItems()
-      .then(list => {setItems(list)})
-      .catch(error =>
+      .then((list) => {
+        setItems(list)
+      })
+      .catch((error) =>
         setWarningMessage({
           warningMessageOpen: true,
           warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
         })
-      );
-  }, []);
+      )
+  }, [])
 
   return (
-    <main id="mainContent" className="container">
-      <div className="row justify-content-center py-5">
-        <h3>List</h3>
+    <main id='mainContent' className='container'>
+      <div className='row justify-content-center py-5'>
+        <h3>Todo List</h3>
       </div>
-      <div className="row">
-        <div className="col-12 p-0">
-          <Form addItem={addItem}/>
+      <div className='row'>
+        <div className='col-12 p-0'>
+          <Form addItem={addItem} />
         </div>
-        {items.map(listItem => (
+        {items.map((listItem) => (
           <ListItem
             key={listItem._id}
             item={listItem}
@@ -113,7 +117,7 @@ const List = () => {
         />
       </div>
     </main>
-  );
+  )
 }
 
-export default List;
+export default List
