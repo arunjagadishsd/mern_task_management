@@ -3,13 +3,11 @@ const Todo = require('../models/todo.model')
 module.exports.todo_create = async function(req, res) {
   const {
     text,
-    due
+    due_date
   } = req.body
-  console.log(text, due)
-
   const todo = await Todo.create({
     text,
-    due
+    due_date
   })
   res.json(todo)
 }
