@@ -10,8 +10,8 @@ const todoSchema = new Schema({
     required: true
   },
   label: {
-    type: String,
-    enum: ['Personal', 'Work', 'Shopping', 'Others']
+    type: Schema.Types.ObjectId,
+    ref: 'Label'
   },
   status: {
     type: String,
@@ -22,7 +22,7 @@ const todoSchema = new Schema({
   priority: {
     type: String,
     required: true,
-    default: 'P1',
+    default: 'P4',
     enum: ['P1', 'P2', 'P3', 'P4']
   },
   due_date: {
