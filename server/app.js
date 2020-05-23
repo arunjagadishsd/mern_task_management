@@ -1,28 +1,22 @@
-﻿import createError from 'http-errors'
-import express from 'express'
-import path from 'path'
-import cookieParser from 'cookie-parser'
-import logger from 'morgan'
+﻿const createError = require('http-errors')
+const express = require('express')
+const path = require('path')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
 
-import indexRouter from './routes/index'
+const indexRouter = require('./routes/index')
 
 const app = express()
 
 app.use(logger('dev'))
 app.use(express.json())
-app.use(
-  express.urlencoded({
-    extended: false
-  })
-)
+app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'build')))
 
 app.use('/api', indexRouter)
 app.get('*', (req, res) => {
-  res.sendFile('build/index.html', {
-    root: __dirname
-  })
+  res.sendFile('build/index.html', { root: __dirname })
 })
 
 // catch 404 and forward to error handler

@@ -6,7 +6,7 @@ const debug = require('debug')('WebTemplateStudioExpress:server')
 const http = require('http')
 var mongoose = require('mongoose')
 const app = require('./app')
-const CONSTANTS = require('./constants').default
+const CONSTANTS = require('./constants')
 
 /**
  * Get port from environment and store in Express.
@@ -32,8 +32,7 @@ server.on('listening', onListening)
 // Mongodb Connect
 mongoose
   .connect(
-    'mongodb+srv://admin:admin@cluster0-g9dkv.gcp.mongodb.net/test?retryWrites=true&w=majority',
-    {
+    'mongodb+srv://admin:admin@cluster0-g9dkv.gcp.mongodb.net/test?retryWrites=true&w=majority', {
       useNewUrlParser: true,
       useUnifiedTopology: true
     }

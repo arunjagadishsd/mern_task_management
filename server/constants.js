@@ -6,4 +6,4 @@ CONSTANTS.ENDPOINT.LIST = '/list'
 
 CONSTANTS.ENDPOINT.MASTERDETAIL = '/masterdetail'
 
-export default CONSTANTS
+module.exports = CONSTANTS;
