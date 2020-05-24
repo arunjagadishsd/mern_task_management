@@ -100,7 +100,7 @@ const List = () => {
         <h3>Todo List</h3>
       </div>
       <div className='row'>
-        <div className='col-12 p-0'>
+        <div className='col-12 p-0 mb-4'>
           <TodoForm addItem={addItem} />
         </div>
         {items.map((listItem) => (
