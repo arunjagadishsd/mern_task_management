@@ -1,7 +1,7 @@
 ﻿const CONSTANTS = require("../constants");
 const express = require('express')
 const todo_controller = require('../controllers/todo.controller')
-const label_controller = require('../controllers/todo.controller')
+const label_controller = require('../controllers/label.controller')
 
 const router = express.Router()
 // TODO ENDPOINTS
