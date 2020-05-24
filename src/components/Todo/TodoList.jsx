@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react'
-import ListItem from './ListItem'
-import Form from './Form'
+import TodoListItem from './TodoListItem'
+import TodoForm from './TodoForm'
 import WarningMessage from '../WarningMessage'
 import CONSTANTS from '../../constants'
 
@@ -101,10 +101,10 @@ const List = () => {
       </div>
       <div className='row'>
         <div className='col-12 p-0'>
-          <Form addItem={addItem} />
+          <TodoForm addItem={addItem} />
         </div>
         {items.map((listItem) => (
-          <ListItem
+          <TodoListItem
             key={listItem._id}
             item={listItem}
             deleteItem={deleteItem}

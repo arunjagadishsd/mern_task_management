@@ -1,4 +1,5 @@
 ﻿import MomentUtils from '@date-io/moment'
+import moment from 'moment'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
@@ -14,18 +15,19 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-end'
+  },
+  icon: {
+    margin: '0 0.5rem',
+    color: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
   }
 }))
 
-const Form = (params) => {
+const Form = () => {
   const [textField, setTextField] = useState('')
   const [dueField, setDueField] = useState(new Date())
 
   const handleChange = (e) => {
     setTextField(e.target.value)
-  }
-  const handleDateChange = (e) => {
-    setDueField(e.target.value)
   }
 
   const handleSubmit = async (e) => {
@@ -47,48 +49,47 @@ const Form = (params) => {
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={1}>
-        <Grid item xs={9}>
+        <Grid item xs={10}>
           <TextField
             id='outlined-full-width'
-            label='Today Mar 24 2020'
             name='textField'
             placeholder='e.g. Read every day @goals #learning'
             onChange={handleChange}
             value={textField}
             fullWidth
             margin='normal'
-            InputLabelProps={{
-              shrink: true
-            }}
-            variant='outlined'
           />
         </Grid>
         <Grid item xs={2}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <DatePicker
-              name='dateField'
-              label='Date'
+              margin='normal'
               value={dueField}
-              onChange={handleDateChange}
+              onChange={setDueField}
               fullWidth
             />
           </MuiPickersUtilsProvider>
         </Grid>
-        <Grid item xs={1}>
-          <Button variant='contained' color='primary' type='submit'>
-            Submit
-          </Button>
-        </Grid>
       </Grid>
       <div className='form-row'>
         <Grid container spacing={1}>
-          <Grid item xs={9} className={classes.iconContainer}>
-            <ListIcon />
-            <LocalOfferIcon />
-            <FlagIcon />
+          <Grid item xs={1}>
+            <Button variant='contained' color='primary' type='submit'>
+              Submit
+            </Button>
           </Grid>
-          <Grid item xs={2}></Grid>
-          <Grid item xs={1}></Grid>
+          <Grid item xs={1}>
+            <Button color='secondary' variant='contained'>
+              Cancel
+            </Button>
+          </Grid>
+          <Grid xs={10} className={classes.iconContainer}>
+            <div>
+              <ListIcon className={classes.icon} />
+              <LocalOfferIcon className={classes.icon} />
+              <FlagIcon className={classes.icon} />
+            </div>
+          </Grid>
         </Grid>
       </div>
     </form>
