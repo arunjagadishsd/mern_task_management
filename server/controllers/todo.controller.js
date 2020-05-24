@@ -1,5 +1,4 @@
 const Todo = require('../models/todo.model')
-const Label = require('../models/label.model')
 
 module.exports.todo_create = async function(req, res) {
   try {
