@@ -3,16 +3,20 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import FlagIcon from '@material-ui/icons/Flag'
 
 const ITEM_HEIGHT = 48
 
-export default function LongMenu({ options }) {
+function Label({ options, todo, setTodo }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
+  }
+  const handleSelect = (event, priority) => {
+    setTodo({ ...todo, priority })
+    handleClose()
   }
 
   const handleClose = () => {
@@ -27,7 +31,7 @@ export default function LongMenu({ options }) {
         aria-haspopup='true'
         onClick={handleClick}
       >
-        <MoreVertIcon />
+        <FlagIcon />
       </IconButton>
       <Menu
         id='long-menu'
@@ -44,14 +48,14 @@ export default function LongMenu({ options }) {
       >
         {options.map((option) => (
           <MenuItem
-            key={option._id}
-            // selected={option.text === 'Shopping'}
-            onClick={handleClose}
+            key={option}
+            onClick={(event) => handleSelect(event, option)}
           >
-            {option.text}
+            {option}
           </MenuItem>
         ))}
       </Menu>
     </React.Fragment>
   )
 }
+export default Label

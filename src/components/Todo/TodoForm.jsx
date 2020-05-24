@@ -5,29 +5,32 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import FlagIcon from '@material-ui/icons/Flag'
-import FeatureList from './FeatureList'
-import LocalOfferIcon from '@material-ui/icons/LocalOffer'
-import ListIcon from '@material-ui/icons/List'
+import Label from './Label'
+import Status from './Status'
+import Priority from './Priority'
 import React, { useState, useEffect } from 'react'
-import CONSTANTS from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
   iconContainer: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-end'
-  },
-  icon: {
-    margin: '0 0.5rem',
-    color: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
   }
 }))
 
-const options = ['1']
 const Form = ({ setWarningMessage }) => {
   const [textField, setTextField] = useState('')
   const [dueField, setDueField] = useState(new Date())
   const [labels, setLabels] = useState([])
+  const [status, setStatus] = useState([])
+  const priorities = ['P1', 'P2', 'P3', 'P4']
+  const [todo, setTodo] = useState({
+    text: '',
+    due_date: new Date(),
+    label: null,
+    status: null,
+    priority: 'P4'
+  })
 
   const getItems = (url) => {
     let promiseList = fetch(`http://localhost:3001/api/${url}`).then(
@@ -46,30 +49,28 @@ const Form = ({ setWarningMessage }) => {
       .then((list) => {
         setLabels(list)
       })
-      .catch((error) =>
-        setWarningMessage({
-          warningMessageOpen: true,
-          warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
-        })
-      )
+      .catch((error) => console.log(error))
+    getItems('status')
+      .then((list) => {
+        setStatus(list)
+      })
+      .catch((error) => console.log(error))
   }, [])
 
   const handleChange = (e) => {
-    setTextField(e.target.value)
+    const { name, value } = e.target
+    setTodo({ ...todo, [name]: value })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const data = { text: textField, due_date: dueField }
     await fetch('http://localhost:3001/api/todo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
+      body: JSON.stringify(todo) // body data type must match "Content-Type" header
     })
-
-    // setTextField('')
   }
 
   const classes = useStyles()
@@ -80,10 +81,10 @@ const Form = ({ setWarningMessage }) => {
         <Grid item xs={10}>
           <TextField
             id='outlined-full-width'
-            name='textField'
+            name='text'
             placeholder='e.g. Read every day @goals #learning'
             onChange={handleChange}
-            value={textField}
+            value={todo.text}
             fullWidth
             margin='normal'
           />
@@ -91,9 +92,10 @@ const Form = ({ setWarningMessage }) => {
         <Grid item xs={2}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <DatePicker
+              name='due_date'
               margin='normal'
-              value={dueField}
-              onChange={setDueField}
+              value={todo.due_date}
+              onChange={handleChange}
               fullWidth
             />
           </MuiPickersUtilsProvider>
@@ -112,56 +114,13 @@ const Form = ({ setWarningMessage }) => {
             </Button>
           </Grid>
           <Grid item xs={10} className={classes.iconContainer}>
-            <div>
-              <FeatureList options={labels} />
-              <ListIcon className={classes.icon} />
-              <LocalOfferIcon className={classes.icon} />
-              <FlagIcon className={classes.icon} />
-            </div>
+            <Status options={status} todo={todo} setTodo={setTodo} />
+            <Label options={labels} todo={todo} setTodo={setTodo} />
+            <Priority options={priorities} todo={todo} setTodo={setTodo} />
           </Grid>
         </Grid>
       </div>
     </form>
-
-    // <form onSubmit={handleSubmit} className=" my-3">
-    //   <div className="form-row">
-    //     <div className="col">
-    //       <input
-    //         type="text"
-    //         onChange={handleChange}
-    //         value={textField}
-    //         id="text"
-    //         name="textField"
-    //         className="form-control "
-    //       />
-    //     </div>
-    //     <div className="col-auto">
-    //       <input
-    //         id="date"
-    //         type="date"
-    //         onChange={handleDateChange}
-    //         value={dueField}
-    //         name="dateField"
-    //         className="form-control"
-    //       />
-    //     </div>
-    //     <div className="col-auto">
-    //       <button type="submit" className="btn btn-primary ml-2">
-    //         Submit
-    //       </button>
-    //     </div>
-    //   </div>
-    //   <div className="form-row">
-    //     <div className="col-9 classes.iconContainer" style={{ textAlign: 'right' }} >
-    //       <ListIcon/>
-    //       <LocalOfferIcon/>
-    //       <FlagIcon/>
-    //     </div>
-    //   </div>
-    //   {/*
-    //   <label htmlFor='text'>Due</label>
-    //    */}
-    // </form>
   )
 }
 
