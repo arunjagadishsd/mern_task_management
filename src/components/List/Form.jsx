@@ -50,7 +50,7 @@ const Form = (params) => {
         </div>
         <div className='col-auto'>
           <button type='submit' className='btn btn-primary ml-2'>
-            Submit
+            Add Todo
           </button>
         </div>
       </div>

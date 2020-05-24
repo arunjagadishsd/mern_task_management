@@ -14,10 +14,8 @@ const todoSchema = new Schema({
     ref: 'Label'
   },
   status: {
-    type: String,
-    required: true,
-    default: 'New',
-    enum: ['New', 'In progress', 'Completed']
+    type: Schema.Types.ObjectId,
+    ref: 'Status'
   },
   priority: {
     type: String,
@@ -29,7 +27,8 @@ const todoSchema = new Schema({
     type: Date
   },
   created_date: {
-    type: Date
+    type: Date,
+    default: Date.now
   }
 
 })
