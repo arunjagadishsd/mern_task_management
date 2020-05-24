@@ -8,7 +8,8 @@ import FlagIcon from '@material-ui/icons/Flag'
 import FeatureList from './FeatureList'
 import LocalOfferIcon from '@material-ui/icons/LocalOffer'
 import ListIcon from '@material-ui/icons/List'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import CONSTANTS from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
   iconContainer: {
@@ -22,11 +23,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const options = ['Atria', 'Callisto', 'Pyxis']
-
-const Form = () => {
+const options = ['1']
+const Form = ({ setWarningMessage }) => {
   const [textField, setTextField] = useState('')
   const [dueField, setDueField] = useState(new Date())
+  const [labels, setLabels] = useState([])
+
+  const getItems = (url) => {
+    let promiseList = fetch(`http://localhost:3001/api/${url}`).then(
+      (response) => {
+        if (!response.ok) {
+          throw Error(response.statusText)
+        }
+        return response.json()
+      }
+    )
+    return promiseList
+  }
+
+  useEffect(() => {
+    getItems('label')
+      .then((list) => {
+        setLabels(list)
+      })
+      .catch((error) =>
+        setWarningMessage({
+          warningMessageOpen: true,
+          warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
+        })
+      )
+  }, [])
 
   const handleChange = (e) => {
     setTextField(e.target.value)
@@ -87,7 +113,7 @@ const Form = () => {
           </Grid>
           <Grid item xs={10} className={classes.iconContainer}>
             <div>
-              <FeatureList options={options} />
+              <FeatureList options={labels} />
               <ListIcon className={classes.icon} />
               <LocalOfferIcon className={classes.icon} />
               <FlagIcon className={classes.icon} />

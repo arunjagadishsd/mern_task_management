@@ -86,12 +86,10 @@ const List = () => {
       .then((list) => {
         setItems(list)
       })
-      .catch((error) =>
-        setWarningMessage({
-          warningMessageOpen: true,
-          warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
-        })
-      )
+      .catch((error) => ({
+        warningMessageOpen: true,
+        warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
+      }))
   }, [])
 
   return (
@@ -101,7 +99,7 @@ const List = () => {
       </div>
       <div className='row'>
         <div className='col-12 p-0 mb-4'>
-          <TodoForm addItem={addItem} />
+          <TodoForm addItem={addItem} setWarningMessage={setWarningMessage} />
         </div>
         {items.map((listItem) => (
           <TodoListItem

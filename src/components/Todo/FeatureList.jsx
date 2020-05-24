@@ -44,11 +44,11 @@ export default function LongMenu({ options }) {
       >
         {options.map((option) => (
           <MenuItem
-            key={option}
-            selected={option === 'Pyxis'}
+            key={option._id}
+            // selected={option.text === 'Shopping'}
             onClick={handleClose}
           >
-            {option}
+            {option.text}
           </MenuItem>
         ))}
       </Menu>
