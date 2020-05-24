@@ -1,11 +1,11 @@
 ﻿import MomentUtils from '@date-io/moment'
-import moment from 'moment'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import FlagIcon from '@material-ui/icons/Flag'
+import FeatureList from './FeatureList'
 import LocalOfferIcon from '@material-ui/icons/LocalOffer'
 import ListIcon from '@material-ui/icons/List'
 import React, { useState } from 'react'
@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
   }
 }))
+
+const options = ['Atria', 'Callisto', 'Pyxis']
 
 const Form = () => {
   const [textField, setTextField] = useState('')
@@ -83,8 +85,9 @@ const Form = () => {
               Cancel
             </Button>
           </Grid>
-          <Grid xs={10} className={classes.iconContainer}>
+          <Grid item xs={10} className={classes.iconContainer}>
             <div>
+              <FeatureList options={options} />
               <ListIcon className={classes.icon} />
               <LocalOfferIcon className={classes.icon} />
               <FlagIcon className={classes.icon} />

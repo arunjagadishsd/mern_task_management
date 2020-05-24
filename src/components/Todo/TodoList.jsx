@@ -110,6 +110,7 @@ const List = () => {
             deleteItem={deleteItem}
           />
         ))}
+
         <WarningMessage
           open={warningMessage.warningMessageOpen}
           text={warningMessage.warningMessageText}
