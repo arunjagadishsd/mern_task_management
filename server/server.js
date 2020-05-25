@@ -32,10 +32,10 @@ server.on('listening', onListening)
 // Mongodb Connect
 mongoose
   .connect(
-    'mongodb+srv://admin:admin@cluster0-g9dkv.gcp.mongodb.net/test?retryWrites=true&w=majority',
-    {
+    'mongodb+srv://admin:admin@cluster0-g9dkv.gcp.mongodb.net/test?retryWrites=true&w=majority', {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true
     }
   )
   .then(() => console.log('connected'))

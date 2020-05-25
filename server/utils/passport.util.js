@@ -1,34 +1,72 @@
-const {
-    Strategy,
-    ExtractJwt
-} = require('passport-jwt');
-//this is using ES6 Destructuring. If you're not using a build step,
-//this could cause issues and is equivalent to
-require('dotenv').config();
-const secret = process.env.SECRET || 'some other secret as default';
-const mongoose = require('mongoose');
-const User = require('./models/user');
-const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: secret
-};
-//this sets how we handle tokens coming from the requests that come
-// and also defines the key to be used when verifying the token.
-module.exports = passport => {
-    passport.use(
-        new Strategy(opts, (payload, done) => {
-            User.findById(payload.id)
-                .then(user => {
-                    if (user) {
-                        return done(null, {
-                            id: user._id,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
-                            email: user.email,
-                        });
-                    }
-                    return done(null, false);
-                }).catch(err => console.error(err));
-        });
-    );
-};
+const passport = require('passport')
+const User = require('../models/user.model')
+const JwtStrategy = require('passport-jwt').Strategy
+const ExtractJwt = require('passport-jwt').ExtractJwt
+const LocalStrategy = require('passport-local')
+
+// Create local strategy
+const localOptions = {
+  usernameField: 'email'
+}
+const localLogin = new LocalStrategy(localOptions, function (
+  email,
+  password,
+  done
+) {
+  // Verify this email and password, call done with the user
+  // if it is the correct email and password
+  // otherwise, call done with false
+  User.findOne(
+    {
+      email: email
+    },
+    function (err, user) {
+      if (err) {
+        return done(err)
+      }
+      if (!user) {
+        return done(null, false)
+      }
+
+      // compare passwords - is `password` equal to user.password?
+      user.comparePassword(password, function (err, isMatch) {
+        if (err) {
+          return done(err)
+        }
+        if (!isMatch) {
+          return done(null, false)
+        }
+
+        return done(null, user)
+      })
+    }
+  )
+})
+
+// Setup options for JWT Strategy
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: process.env.SECRET
+}
+
+// Create JWT strategy
+const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
+  // See if the user ID in the payload exists in our database
+  // If it does, call 'done' with that other
+  // otherwise, call done without a user object
+  User.findById(payload.sub, function (err, user) {
+    if (err) {
+      return done(err, false)
+    }
+
+    if (user) {
+      done(null, user)
+    } else {
+      done(null, false)
+    }
+  })
+})
+
+// Tell passport to use this strategy
+passport.use(jwtLogin)
+passport.use(localLogin)

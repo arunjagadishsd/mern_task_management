@@ -5,10 +5,12 @@ const {
     model
 } = mongoose
 
-const labelSchema = new Schema({
+const userSchema = new Schema({
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        lowercase: true
     },
     password: {
         type: String,
@@ -27,4 +29,34 @@ const labelSchema = new Schema({
         default: Date.now
     }
 })
-module.exports = Label = model('Label', labelSchema)
+userSchema.pre('save', function(next) {
+    const user = this;
+    bcrypt.genSalt(10, function(err, salt) {
+        if (err) {
+            return next(err);
+        }
+        console.log('userSchema', salt);
+
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err) {
+                console.log(err);
+                return next(err);
+            }
+            console.log('hash', hash);
+            user.password = hash;
+            next();
+        });
+    });
+});
+
+userSchema.methods.comparePassword = function(candidatePassword, callback) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) {
+            return callback(err);
+        }
+
+        callback(null, isMatch);
+    });
+}
+
+module.exports = User = model('User', userSchema)
