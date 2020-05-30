@@ -1,41 +1,37 @@
-﻿const CONSTANTS = require("../constants");
-const express = require("express");
-const sampleData = require("../sampleData");
+﻿const express = require('express')
+require('../utils/passport.util');
+const passport = require('passport');
 
+const todo_controller = require('../controllers/todo.controller')
+const label_controller = require('../controllers/label.controller')
+const status_controller = require('../controllers/status.controller')
+const auth_controller = require('../controllers/auth.controller')
 
-const router = express.Router();
-// LIST ENDPOINTS
-router.get(CONSTANTS.ENDPOINT.LIST, function(req, res) {
-  res.json(sampleData.listTextAssets);
+const requireAuth = passport.authenticate('jwt', {
+    session: false
+});
+const requireSignin = passport.authenticate('local', {
+    session: false
 });
 
-router.post(CONSTANTS.ENDPOINT.LIST, function(req, res) {
-  let listItem = {
-    text: req.body.text,
-    _id: sampleData.listID
-  };
-  sampleData.listTextAssets.unshift(listItem);
-  res.json(listItem);
-  sampleData.listID++;
+const router = express.Router()
+
+// AUTH ENDPOINTS
+router.get('/authed', requireAuth, function(req, res) {
+    res.send({
+        hi: 'there'
+    });
 });
+router.post('/signin', requireSignin, auth_controller.signin);
+router.post('/signup', auth_controller.signup);
+// TODO ENDPOINTS
+router.post('/todo', todo_controller.todo_create);
+router.get('/todo', todo_controller.todo_list);
+// LABEL ENDPOINTS
+router.post('/label', label_controller.label_create);
+router.get('/label', label_controller.label_list);
+// STATUS ENDPOINTS
+router.post('/status', status_controller.status_create);
+router.get('/status', status_controller.status_list);
 
-router.delete(CONSTANTS.ENDPOINT.LIST + "/:_id", function(req, res) {
-  const { _id } = req.params;
-  var index = sampleData.listTextAssets.findIndex(
-    listItem => listItem._id === Number(_id)
-  );
-  if (index > -1) {
-    sampleData.listTextAssets.splice(index, 1);
-    res.json({ _id: Number(_id), text: "This commented was deleted" });
-  } else {
-    res.status(404).send("Could not find item with id:" + _id);
-  }
-});
-
-// MasterDetail Page Endpoint
-router.get(CONSTANTS.ENDPOINT.MASTERDETAIL, (req, res) => {
-  res.json(sampleData.textAssets);
-});
-
-
-module.exports = router;
+module.exports = router

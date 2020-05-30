@@ -1,10 +1,9 @@
-﻿const CONSTANTS = {};
-CONSTANTS.ENDPOINT = {};
+﻿const CONSTANTS = {}
+CONSTANTS.ENDPOINT = {}
 
-CONSTANTS.PORT = process.env.PORT || "3001";
-CONSTANTS.ENDPOINT.LIST = "/list";
+CONSTANTS.PORT = process.env.PORT || '3001'
+CONSTANTS.ENDPOINT.LIST = '/list'
 
-CONSTANTS.ENDPOINT.MASTERDETAIL = "/masterdetail";
-
+CONSTANTS.ENDPOINT.MASTERDETAIL = '/masterdetail'
 
 module.exports = CONSTANTS;

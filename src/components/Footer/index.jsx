@@ -1,39 +1,20 @@
-﻿import React from "react";
-import styles from "./footer.module.css";
+﻿import React from 'react'
+import styles from './footer.module.css'
 
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <div className="container-fluid">
-        <div className="row justify-content-around">
-          <div className="col-8 col-md-5">
-            <h5 className={styles.title}>task_management</h5>
+      <div className='container-fluid'>
+        <div className='row justify-content-around'>
+          <div className='col-12 text-center'>
             <p className={styles.description}>
-              This is placeholder text. Your web app description goes here.
+              <small>&copy; Copyright 2020</small>
             </p>
           </div>
-          <div className="col-2">
-            <ul className="list-unstyled">
-              <li>
-                <a className={styles.footerlink} href="/">
-                  Example Link
-                </a>
-              </li>
-              <li>
-                <a className={styles.footerlink} href="/">
-                  Example Link
-                </a>
-              </li>
-              <li>
-                <a className={styles.footerlink} href="/">
-                  Example Link
-                </a>
-              </li>
-            </ul>
-          </div>
+          <div className='col-2'></div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
-export default Footer;
+export default Footer
