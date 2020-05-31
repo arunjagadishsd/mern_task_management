@@ -1,7 +1,6 @@
 ﻿import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import './App.css'
-import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
 import Master_Detail from './components/Master_Detail/Master_Detail'
@@ -12,7 +11,6 @@ import TodoList from './components/Todo/TodoList'
 const App = () => {
   return (
     <React.Fragment>
-      <NavBar />
       <Switch>
         <Route exact path='/' component={TodoList} />
         <Route path='/Master_Detail' component={Master_Detail} />
