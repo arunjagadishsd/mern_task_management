@@ -8,7 +8,6 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "bcrypt": "^4.0.1",
-    "bootstrap": "4.4.1",
     "classnames": "2.2.6",
     "cookie-parser": "1.4.5",
     "cors": "^2.8.5",

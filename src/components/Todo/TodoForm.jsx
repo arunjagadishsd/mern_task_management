@@ -4,13 +4,12 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import FlagIcon from '@material-ui/icons/Flag'
+import React, { useEffect, useState } from 'react'
 import Label from './Label'
-import Status from './Status'
 import Priority from './Priority'
-import React, { useState, useEffect } from 'react'
+import Status from './Status'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   iconContainer: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -18,9 +17,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Form = ({ setWarningMessage }) => {
-  const [textField, setTextField] = useState('')
-  const [dueField, setDueField] = useState(new Date())
+const Form = () => {
+  // const [textField, setTextField] = useState('')
+  // const [dueField, setDueField] = useState(new Date())
   const [labels, setLabels] = useState([])
   const [status, setStatus] = useState([])
   const priorities = ['P1', 'P2', 'P3', 'P4']
@@ -33,9 +32,10 @@ const Form = ({ setWarningMessage }) => {
   })
 
   const getItems = (url) => {
-    let promiseList = fetch(`http://localhost:3001/api/${url}`).then(
+    let promiseList = fetch(`http://localhost:3001/api/${ url }`).then(
       (response) => {
-        if (!response.ok) {
+        if (!response.ok)
+        {
           throw Error(response.statusText)
         }
         return response.json()

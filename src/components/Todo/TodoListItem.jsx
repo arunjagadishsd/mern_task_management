@@ -1,8 +1,12 @@
 ﻿import React from "react";
-import PropTypes from "prop-types";
+import { Grid } from "@material-ui/core"
 
 const ListItem = ({ item, deleteItem }) => {
   return (
+
+
+
+
     <div className="col-12 mb-3 border">
       <div className="row">
         <div className="col-11">
@@ -24,9 +28,5 @@ const ListItem = ({ item, deleteItem }) => {
   );
 }
 
-ListItem.propTypes = {
-  item: PropTypes.any,
-  deleteItem: PropTypes.func
-}
 
 export default ListItem;
