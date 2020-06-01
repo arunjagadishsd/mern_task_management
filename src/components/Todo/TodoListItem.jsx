@@ -1,5 +1,5 @@
-﻿import React from "react";
-import { Grid } from "@material-ui/core";
+﻿/* eslint-disable react/prop-types */
+import React from "react";
 
 const ListItem = ({ item, deleteItem }) => {
     return (

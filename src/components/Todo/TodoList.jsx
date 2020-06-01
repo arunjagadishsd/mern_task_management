@@ -322,6 +322,7 @@ export default function PersistentDrawerLeft() {
                                                         <EditIcon color="primary" />
                                                     </IconButton>
                                                     <IconButton
+                                                        onClick={deleteItem}
                                                         edge="end"
                                                         aria-label="Delete"
                                                     >

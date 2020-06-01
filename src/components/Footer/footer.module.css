@@ -1,12 +1,8 @@
-﻿.footer {
-  /* padding-top: 0.5rem; */
-}
-
-.description {
-  color: #666666;
+﻿.description {
+    color: #666666;
 }
 
 .footerlink,
 .footerlink:hover {
-  color: #fff;
+    color: #fff;
 }
