@@ -26,12 +26,12 @@ router.post("/signin", requireSignin, authController.signin);
 router.post("/signup", authController.signup);
 // TODO ENDPOINTS
 router.post("/todo", todoController.todoCreate);
-router.get("/todo", todoController.todo_list);
+router.get("/todo", todoController.todoList);
 // LABEL ENDPOINTS
 router.post("/label", labelController.labelCreate);
-router.get("/label", labelController.label_list);
+router.get("/label", labelController.labelList);
 // STATUS ENDPOINTS
 router.post("/status", statusController.statusCreate);
-router.get("/status", statusController.status_list);
+router.get("/status", statusController.statusList);
 
 module.exports = router;

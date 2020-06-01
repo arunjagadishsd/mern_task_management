@@ -1,69 +1,18 @@
-﻿import { Box, Checkbox, ListItemSecondaryAction } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
+﻿/* eslint-disable react/prop-types */
+import { Box } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
-import EditIcon from "@material-ui/icons/Edit";
-import MailIcon from "@material-ui/icons/Mail";
-import MenuIcon from "@material-ui/icons/Menu";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import clsx from "clsx";
 import React, { useState } from "react";
 import CONSTANTS from "../../constants";
 import WarningMessage from "../WarningMessage";
 import TodoForm from "./TodoForm";
+import TodoListItem from "./TodoListItem";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: "flex",
-        backgroundColor: theme.palette.background.paper,
-    },
-    appBar: {
-        transition: theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarShift: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        transition: theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    hide: {
-        display: "none",
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    drawerHeader: {
-        display: "flex",
-        alignItems: "center",
-        padding: theme.spacing(0, 1),
-        ...theme.mixins.toolbar,
-    },
     content: {
         flexGrow: 1,
         paddingLeft: theme.spacing(3),
@@ -81,9 +30,15 @@ const useStyles = makeStyles((theme) => ({
         }),
         marginLeft: 0,
     },
+    drawerHeader: {
+        display: "flex",
+        alignItems: "center",
+        padding: theme.spacing(0, 2),
+        ...theme.mixins.toolbar,
+    },
 }));
 
-export default function PersistentDrawerLeft() {
+const TodoList = ({ open }) => {
     const [checked, setChecked] = React.useState([0]);
     const [items, setItems] = useState([]);
     const [warningMessage, setWarningMessage] = useState({
@@ -108,6 +63,7 @@ export default function PersistentDrawerLeft() {
             if (!response.ok) {
                 throw Error(response.statusText);
             }
+            console.log(response);
             return response.json();
         });
         return promiseList;
@@ -184,91 +140,9 @@ export default function PersistentDrawerLeft() {
             }));
     }, []);
     const classes = useStyles();
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
 
     return (
-        <div className={classes.root}>
-            <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
-                })}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(
-                            classes.menuButton,
-                            open && classes.hide
-                        )}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap>
-                        Persistent drawer
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === "ltr" ? (
-                            <ChevronLeftIcon />
-                        ) : (
-                            <ChevronRightIcon />
-                        )}
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    {["Inbox", "Starred", "Send email", "Drafts"].map(
-                        (text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? (
-                                        <InboxIcon />
-                                    ) : (
-                                        <MailIcon />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        )
-                    )}
-                </List>
-                <Divider />
-                <List>
-                    {["All mail", "Trash", "Spam"].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+        <React.Fragment>
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: open,
@@ -285,53 +159,18 @@ export default function PersistentDrawerLeft() {
                                 />
                             </div>
                             <List>
-                                {items.map((value) => {
-                                    const labelId = `checkbox-list-label-${value._id}`;
+                                {items.map((item) => {
+                                    const labelId = `checkbox-list-label-${item._id}`;
 
                                     return (
-                                        <React.Fragment key={value._id}>
-                                            <ListItem
-                                                dense
-                                                button
-                                                onClick={handleToggle(value)}
-                                            >
-                                                <ListItemIcon>
-                                                    <Checkbox
-                                                        edge="start"
-                                                        checked={
-                                                            checked.indexOf(
-                                                                value
-                                                            ) !== -1
-                                                        }
-                                                        tabIndex={-1}
-                                                        disableRipple
-                                                        inputProps={{
-                                                            "aria-labelledby": labelId,
-                                                        }}
-                                                    />
-                                                </ListItemIcon>
-                                                <ListItemText
-                                                    id={labelId}
-                                                    primary={value.text}
-                                                />
-                                                <ListItemSecondaryAction>
-                                                    <IconButton
-                                                        edge="end"
-                                                        aria-label="Delete"
-                                                    >
-                                                        <EditIcon color="primary" />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        onClick={deleteItem}
-                                                        edge="end"
-                                                        aria-label="Delete"
-                                                    >
-                                                        <DeleteForeverRoundedIcon color="secondary" />
-                                                    </IconButton>
-                                                </ListItemSecondaryAction>
-                                            </ListItem>
-                                            <Divider />
-                                        </React.Fragment>
+                                        <TodoListItem
+                                            key={item._id}
+                                            item={item}
+                                            labelId={labelId}
+                                            deleteItem={deleteItem}
+                                            handleToggle={handleToggle}
+                                            checked={checked}
+                                        />
                                     );
                                 })}
                             </List>
@@ -345,6 +184,7 @@ export default function PersistentDrawerLeft() {
                     </CssBaseline>
                 </React.Fragment>
             </main>
-        </div>
+        </React.Fragment>
     );
-}
+};
+export default TodoList;

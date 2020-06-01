@@ -25,7 +25,7 @@ const Form = () => {
     const priorities = ["P1", "P2", "P3", "P4"];
     const [todo, setTodo] = useState({
         text: "",
-        due_date: new Date(),
+        dueDate: new Date(),
         label: null,
         status: null,
         priority: "P4",
@@ -46,6 +46,7 @@ const Form = () => {
     useEffect(() => {
         getItems("label")
             .then((list) => {
+                console.log("label", list);
                 setLabels(list);
             })
             .catch((error) => console.log(error));
@@ -91,9 +92,9 @@ const Form = () => {
                 <Grid item xs={2}>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                         <DatePicker
-                            name="due_date"
+                            name="dueDate"
                             margin="normal"
-                            value={todo.due_date}
+                            value={todo.dueDate}
                             onChange={handleChange}
                             fullWidth
                         />

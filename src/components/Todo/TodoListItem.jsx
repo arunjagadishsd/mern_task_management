@@ -1,27 +1,50 @@
 ﻿/* eslint-disable react/prop-types */
 import React from "react";
+import {
+    Checkbox,
+    ListItem,
+    ListItemSecondaryAction,
+    ListItemText,
+    ListItemIcon,
+    IconButton,
+    Divider,
+} from "@material-ui/core";
 
-const ListItem = ({ item, deleteItem }) => {
+import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
+import EditIcon from "@material-ui/icons/Edit";
+
+const TodoListItem = ({ item, deleteItem, labelId, handleToggle, checked }) => {
     return (
-        <div className="col-12 mb-3 border">
-            <div className="row">
-                <div className="col-11">
-                    <p className="mt-3">{item.text}</p>
-                </div>
-                <div className="col-1">
-                    <button
-                        type="button"
-                        className="close py-2"
-                        data-dismiss="alert"
-                        aria-label="Close"
-                        onClick={() => deleteItem(item)}
+        <React.Fragment>
+            <ListItem dense button onClick={handleToggle(item)}>
+                <ListItemIcon>
+                    <Checkbox
+                        edge="start"
+                        checked={checked.indexOf(item) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{
+                            "aria-labelledby": labelId,
+                        }}
+                    />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={item.text} />
+                <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="Delete">
+                        <EditIcon color="primary" />
+                    </IconButton>
+                    <IconButton
+                        onClick={deleteItem}
+                        edge="end"
+                        aria-label="Delete"
                     >
-                        <div aria-hidden="true">&times;</div>
-                    </button>
-                </div>
-            </div>
-        </div>
+                        <DeleteForeverRoundedIcon color="secondary" />
+                    </IconButton>
+                </ListItemSecondaryAction>
+            </ListItem>
+            <Divider />
+        </React.Fragment>
     );
 };
 
-export default ListItem;
+export default TodoListItem;
