@@ -1,5 +1,4 @@
 ﻿const express = require("express");
-require("../utils/passport.util");
 const passport = require("passport");
 
 const todoController = require("../controllers/todo.controller");
@@ -22,8 +21,17 @@ router.get("/authed", requireAuth, function (req, res) {
     hi: "there",
   });
 });
-router.post("/signin", requireSignin, authController.signin);
-router.post("/signup", authController.signup);
+router.post("/auth/signin", requireSignin, authController.signin);
+router.post("/auth/signup", authController.signup);
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/auth/google/callback/",
+  passport.authenticate("google", { failureRedirect: "/", session: false }),
+  authController.googleSignin
+);
 // TODO ENDPOINTS
 router.post("/todo", todoController.todoCreate);
 router.get("/todo", todoController.todoList);

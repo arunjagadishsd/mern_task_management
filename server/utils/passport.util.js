@@ -1,13 +1,16 @@
-const passport = require('passport')
-const User = require('../models/user.model')
-const JwtStrategy = require('passport-jwt').Strategy
-const ExtractJwt = require('passport-jwt').ExtractJwt
-const LocalStrategy = require('passport-local')
+/* eslint-disable consistent-return */
+const passport = require("passport");
+const JwtStrategy = require("passport-jwt").Strategy;
+const { ExtractJwt } = require("passport-jwt");
+const LocalStrategy = require("passport-local");
+const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
+
+const User = require("../models/user.model");
 
 // Create local strategy
 const localOptions = {
-  usernameField: 'email'
-}
+  usernameField: "email",
+};
 const localLogin = new LocalStrategy(localOptions, function (
   email,
   password,
@@ -18,55 +21,68 @@ const localLogin = new LocalStrategy(localOptions, function (
   // otherwise, call done with false
   User.findOne(
     {
-      email: email
+      email: email,
     },
-    function (err, user) {
+    // eslint-disable-next-line consistent-return
+    (err, user) => {
       if (err) {
-        return done(err)
+        return done(err);
       }
       if (!user) {
-        return done(null, false)
+        return done(null, false);
       }
 
       // compare passwords - is `password` equal to user.password?
-      user.comparePassword(password, function (err, isMatch) {
-        if (err) {
-          return done(err)
+      user.comparePassword(password, function (error, isMatch) {
+        if (error) {
+          return done(error);
         }
         if (!isMatch) {
-          return done(null, false)
+          return done(null, false);
         }
 
-        return done(null, user)
-      })
+        return done(null, user);
+      });
     }
-  )
-})
+  );
+});
 
 // Setup options for JWT Strategy
 const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-  secretOrKey: process.env.SECRET
-}
+  jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  secretOrKey: process.env.SECRET,
+};
 
 // Create JWT strategy
 const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
   // See if the user ID in the payload exists in our database
   // If it does, call 'done' with that other
   // otherwise, call done without a user object
-  User.findById(payload.sub, function (err, user) {
+  User.findById(payload.sub, (err, user) => {
     if (err) {
-      return done(err, false)
+      return done(err, false);
     }
-
     if (user) {
-      done(null, user)
+      done(null, user);
     } else {
-      done(null, false)
+      done(null, false);
     }
-  })
-})
+  });
+});
 
 // Tell passport to use this strategy
-passport.use(jwtLogin)
-passport.use(localLogin)
+passport.use(jwtLogin);
+passport.use(localLogin);
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        "727370519791-h27sotnjrancestt381iobq5c1p11m9q.apps.googleusercontent.com",
+      clientSecret: "Wf8AH3xqcGCkUP3VMxiiNp8d",
+      callbackURL: "/api/auth/google/callback",
+    },
+    function (accessToken, refreshToken, profile, done) {
+      return done(null, profile);
+    }
+  )
+);

@@ -1,19 +1,24 @@
 ﻿import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/Footer";
 import Home from "./components/Home/Home";
-// import TodoList from "./components/Todo/TodoList";
+import Login from "./components/Auth/Login";
+import queryString from "query-string";
 
-//TODO Web Template Studio: Add routes for your new pages here.
 const App = () => {
+    const history = useHistory();
+    const { token } = queryString.parse(window.location.search);
+    if (token) {
+        localStorage.setItem("token", token);
+        history.push("/");
+    }
     return (
         <React.Fragment>
             <Switch>
                 <Route exact path="/" component={Home} />
-                {/* <Route path="/List" component={TodoList} /> */}
+                <Route exact path="/token" component={Home} />
+                <Route path="/login" component={Login} />
             </Switch>
-            <Footer />
         </React.Fragment>
     );
 };

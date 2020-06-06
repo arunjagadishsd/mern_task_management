@@ -10,9 +10,11 @@ const userSchema = new Schema({
     unique: true,
     lowercase: true,
   },
+  googleId: {
+    type: String,
+  },
   password: {
     type: String,
-    required: true,
   },
   firstName: {
     type: String,
@@ -26,25 +28,6 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
-userSchema.pre("save", function (next) {
-  const user = this;
-  bcrypt.genSalt(10, function (err, salt) {
-    if (err) {
-      return next(err);
-    }
-    console.log("userSchema", salt);
-
-    bcrypt.hash(user.password, salt, function (err, hash) {
-      if (err) {
-        console.log(err);
-        return next(err);
-      }
-      console.log("hash", hash);
-      user.password = hash;
-      next();
-    });
-  });
 });
 
 userSchema.methods.comparePassword = function (candidatePassword, callback) {

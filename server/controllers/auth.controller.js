@@ -1,4 +1,7 @@
+/* eslint-disable no-underscore-dangle */
+
 const jwt = require("jwt-simple");
+const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 
 function tokenForUser(user) {
@@ -12,6 +15,12 @@ function tokenForUser(user) {
   );
 }
 
+async function hashPassword(password) {
+  const salt = await bcrypt.genSalt(10);
+
+  const hash = bcrypt.hash(password, salt);
+  return hash;
+}
 // eslint-disable-next-line no-unused-vars
 exports.signin = function (req, res, next) {
   res.send({
@@ -22,12 +31,7 @@ exports.signin = function (req, res, next) {
 exports.signup = async (req, res, next) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-    console.log({
-      email,
-      password,
-      firstName,
-      lastName,
-    });
+
     if (!email || !password) {
       return res.status(422).send({
         error: "You must provide email and password",
@@ -44,10 +48,10 @@ exports.signup = async (req, res, next) => {
       });
     }
     console.log("b4createdUser");
-
+    const hashedPassword = await hashPassword(password);
     const createdUser = await User.create({
       email,
-      password,
+      password: hashedPassword,
       firstName,
       lastName,
     });
@@ -59,4 +63,22 @@ exports.signup = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+};
+
+exports.googleSignin = async (req, res) => {
+  const googleUser = req.user._json;
+  const user = await User.findOne({ googleId: googleUser.sub });
+  let token = "";
+  if (user) {
+    token = tokenForUser(user);
+  } else {
+    const createdUser = await User.create({
+      googleId: googleUser.sub,
+      email: googleUser.email,
+      firstName: googleUser.given_name,
+      lastName: googleUser.family_name,
+    });
+    token = tokenForUser(createdUser);
+  }
+  res.redirect(`http://localhost:3000/token?token=${token}`);
 };
