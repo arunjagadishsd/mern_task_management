@@ -17,7 +17,10 @@ const App = () => {
         <React.Fragment>
             <Switch>
                 <Route path="/login" component={Login} />
-                <Route path="/token" component={Token} setToken={setToken} />
+                <Route
+                    path="/token"
+                    component={() => <Token setToken={setToken} />}
+                />
                 <Route
                     exact
                     path="/"
