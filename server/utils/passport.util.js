@@ -78,7 +78,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback",
+      callbackURL:
+        "https://frozen-scrubland-45920.herokuapp.com/api/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       return done(null, profile);
