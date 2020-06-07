@@ -12,7 +12,7 @@ const CONSTANTS = require("./constants");
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(CONSTANTS.PORT);
+const port = process.env.PORT || normalizePort(CONSTANTS.PORT);
 app.set("port", port);
 
 /**
