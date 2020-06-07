@@ -1,122 +1,185 @@
-﻿import React, { useState } from 'react'
-import TodoListItem from './TodoListItem'
-import TodoForm from './TodoForm'
-import WarningMessage from '../WarningMessage'
-import CONSTANTS from '../../constants'
+﻿/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from "react";
+import { Box } from "@material-ui/core";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import List from "@material-ui/core/List";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import CONSTANTS from "../../constants";
+import WarningMessage from "../WarningMessage";
+import TodoForm from "./TodoForm";
+import TodoListItem from "./TodoListItem";
+import qs from "query-string";
 
-const List = () => {
-  const [items, setItems] = useState([])
-  const [warningMessage, setWarningMessage] = useState({
-    warningMessageOpen: false,
-    warningMessageText: ''
-  })
+const drawerWidth = 240;
 
-  const getItems = () => {
-    let promiseList = fetch(CONSTANTS.ENDPOINT.LIST).then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText)
-      }
-      return response.json()
-    })
-    return promiseList
-  }
+const useStyles = makeStyles((theme) => ({
+    content: {
+        flexGrow: 1,
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
+        transition: theme.transitions.create("margin", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create("margin", {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+    },
+    drawerHeader: {
+        display: "flex",
+        alignItems: "center",
+        padding: theme.spacing(0, 2),
+        ...theme.mixins.toolbar,
+    },
+}));
 
-  const deleteItem = (item) => {
-    fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, { method: 'DELETE' })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText)
+const TodoList = ({
+    open,
+    token,
+    labels,
+    status,
+    priorities,
+    items,
+    setItems,
+    query,
+}) => {
+    const [checked, setChecked] = React.useState([0]);
+
+    const [warningMessage, setWarningMessage] = useState({
+        warningMessageOpen: false,
+        warningMessageText: "",
+    });
+
+    const handleToggle = (value) => () => {
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
         }
-        return response.json()
-      })
-      .then((result) => {
-        setItems(items.filter((item) => item._id !== result._id))
-      })
-      .catch((error) => {
-        setWarningMessage({
-          warningMessageOpen: true,
-          warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_DELETE} ${error}`
+        setChecked(newChecked);
+    };
+
+    const getItems = (query) => {
+        let promiseList = fetch(
+            CONSTANTS.ENDPOINT.LIST + "?" + qs.stringify(query),
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        ).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json();
+        });
+        return promiseList;
+    };
+
+    const deleteItem = (item) => {
+        fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, {
+            method: "DELETE",
+            headers: { Authorization: token },
         })
-      })
-  }
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(() => {
+                getTodo();
+            })
+            .catch((error) => {
+                setWarningMessage({
+                    warningMessageOpen: true,
+                    warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_DELETE} ${error}`,
+                });
+            });
+    };
 
-  const addItem = (textField) => {
-    // Warning Pop Up if the user submits an empty message
-    if (!textField) {
-      setWarningMessage({
-        warningMessageOpen: true,
-        warningMessageText: CONSTANTS.ERROR_MESSAGE.LIST_EMPTY_MESSAGE
-      })
-      return
-    }
-
-    fetch(CONSTANTS.ENDPOINT.LIST, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: textField
-      })
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText)
-        }
-        return response.json()
-      })
-      .then((itemAdded) => {
-        setItems([itemAdded, ...items])
-      })
-      .catch((error) =>
+    const closeWarningMessage = () => {
         setWarningMessage({
-          warningMessageOpen: true,
-          warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_ADD} ${error}`
-        })
-      )
-  }
+            warningMessageOpen: false,
+            warningMessageText: "",
+        });
+    };
+    const getTodo = () => {
+        getItems(query)
+            .then((list) => {
+                setItems(list);
+            })
+            .catch((error) => ({
+                warningMessageOpen: true,
+                warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`,
+            }));
+    };
+    useEffect(() => getTodo(), [query]);
+    const classes = useStyles();
 
-  const closeWarningMessage = () => {
-    setWarningMessage({
-      warningMessageOpen: false,
-      warningMessageText: ''
-    })
-  }
+    return (
+        <React.Fragment>
+            <main
+                className={clsx(classes.content, {
+                    [classes.contentShift]: open,
+                })}
+            >
+                <div className={classes.drawerHeader} />
+                <React.Fragment>
+                    <CssBaseline>
+                        <Box>
+                            <div>
+                                <TodoForm
+                                    setWarningMessage={setWarningMessage}
+                                    token={token}
+                                    getTodo={getTodo}
+                                    editTodo={null}
+                                    isEdit={false}
+                                    labels={labels}
+                                    status={status}
+                                    priorities={priorities}
+                                />
+                            </div>
+                            <List>
+                                {items.map((item) => {
+                                    const labelId = `checkbox-list-label-${item._id}`;
 
-  React.useEffect(() => {
-    getItems()
-      .then((list) => {
-        setItems(list)
-      })
-      .catch((error) => ({
-        warningMessageOpen: true,
-        warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`
-      }))
-  }, [])
+                                    return (
+                                        <TodoListItem
+                                            key={item._id}
+                                            item={item}
+                                            labelId={labelId}
+                                            deleteItem={() => deleteItem(item)}
+                                            handleToggle={handleToggle}
+                                            checked={checked}
+                                            token={token}
+                                            getTodo={getTodo}
+                                            labels={labels}
+                                            status={status}
+                                            priorities={priorities}
+                                        />
+                                    );
+                                })}
+                            </List>
 
-  return (
-    <main id='mainContent' className='container'>
-      <div className='row justify-content-center py-5'>
-        <h3>Todo List</h3>
-      </div>
-      <div className='row'>
-        <div className='col-12 p-0 mb-4'>
-          <TodoForm addItem={addItem} setWarningMessage={setWarningMessage} />
-        </div>
-        {items.map((listItem) => (
-          <TodoListItem
-            key={listItem._id}
-            item={listItem}
-            deleteItem={deleteItem}
-          />
-        ))}
-
-        <WarningMessage
-          open={warningMessage.warningMessageOpen}
-          text={warningMessage.warningMessageText}
-          onWarningClose={closeWarningMessage}
-        />
-      </div>
-    </main>
-  )
-}
-
-export default List
+                            <WarningMessage
+                                open={warningMessage.warningMessageOpen}
+                                text={warningMessage.warningMessageText}
+                                onWarningClose={closeWarningMessage}
+                            />
+                        </Box>
+                    </CssBaseline>
+                </React.Fragment>
+            </main>
+        </React.Fragment>
+    );
+};
+export default TodoList;

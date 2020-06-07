@@ -1,35 +1,36 @@
-const mongoose = require('mongoose')
-const {
-  Schema,
-  model
-} = mongoose
+const mongoose = require("mongoose");
+
+const { Schema, model } = mongoose;
 
 const todoSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   text: {
     type: String,
-    required: true
+    required: true,
   },
   label: {
     type: Schema.Types.ObjectId,
-    ref: 'Label'
+    ref: "Label",
   },
   status: {
     type: Schema.Types.ObjectId,
-    ref: 'Status'
+    ref: "Status",
   },
   priority: {
     type: String,
     required: true,
-    default: 'P4',
-    enum: ['P1', 'P2', 'P3', 'P4']
+    default: "P4",
+    enum: ["P1", "P2", "P3", "P4"],
   },
-  due_date: {
-    type: Date
-  },
-  created_date: {
+  dueDdate: {
     type: Date,
-    default: Date.now
-  }
-
-})
-module.exports = Todo = model('Todo', todoSchema)
+  },
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+});
+module.exports = model("Todo", todoSchema);

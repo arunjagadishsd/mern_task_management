@@ -1,26 +1,40 @@
-﻿import React from 'react'
-import { Switch, Route } from 'react-router-dom'
-import './App.css'
-import NavBar from './components/NavBar'
-import Footer from './components/Footer'
+﻿import React, { useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import "./App.css";
+import Home from "./components/Home/Home";
+import Login from "./components/Auth/Login";
+import Token from "./components/Auth/Token";
 
-import Master_Detail from './components/Master_Detail/Master_Detail'
-
-import TodoList from './components/Todo/TodoList'
-
-//TODO Web Template Studio: Add routes for your new pages here.
 const App = () => {
-  return (
-    <React.Fragment>
-      <NavBar />
-      <Switch>
-        <Route exact path='/' component={TodoList} />
-        <Route path='/Master_Detail' component={Master_Detail} />
-        <Route path='/List' component={TodoList} />
-      </Switch>
-      <Footer />
-    </React.Fragment>
-  )
-}
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    let isAuthenticated;
+    if (token) {
+        isAuthenticated = true;
+    } else {
+        isAuthenticated = false;
+    }
+    return (
+        <React.Fragment>
+            <Switch>
+                <Route path="/login" component={Login} />
+                <Route
+                    path="/token"
+                    component={() => <Token setToken={setToken} />}
+                />
+                <Route
+                    exact
+                    path="/"
+                    render={() =>
+                        isAuthenticated ? (
+                            <Home token={token} />
+                        ) : (
+                            <Redirect to="/login" />
+                        )
+                    }
+                />
+            </Switch>
+        </React.Fragment>
+    );
+};
 
-export default App
+export default App;

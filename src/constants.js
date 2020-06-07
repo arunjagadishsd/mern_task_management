@@ -14,6 +14,5 @@ CONSTANTS.ENDPOINT = {};
 
 CONSTANTS.ENDPOINT.LIST = "/api/todo";
 
-CONSTANTS.ENDPOINT.MASTERDETAIL = "/api/masterdetail";
 
 export default CONSTANTS;

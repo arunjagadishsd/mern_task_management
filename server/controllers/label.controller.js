@@ -1,31 +1,27 @@
-const Label = require('../models/label.model')
+const Label = require("../models/label.model");
 
-module.exports.label_create = async function(req, res) {
-    try {
-        const {
-            text
-        } = req.body
-        const createdLabel = await Label.create({
-            text
-        })
-        res.json({
-            success: true,
-            data: createdLabel
-        })
-    } catch (error) {
-        res.json({
-            success: false,
-            message: error
-        })
-    }
-}
-module.exports.label_list = async function(req, res) {
-    try {
-        const labelList = await Label.find({})
-        res.json(labelList)
-
-    } catch (error) {
-        res.json(error)
-    }
-
-}
+module.exports.labelCreate = async function (req, res) {
+  try {
+    const { text } = req.body;
+    const createdLabel = await Label.create({
+      text,
+    });
+    res.json({
+      success: true,
+      data: createdLabel,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error,
+    });
+  }
+};
+module.exports.labelList = async function (req, res) {
+  try {
+    const labels = await Label.find();
+    res.json(labels);
+  } catch (error) {
+    res.json(error);
+  }
+};

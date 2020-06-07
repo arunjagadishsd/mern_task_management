@@ -1,37 +1,46 @@
-﻿const express = require('express')
-require('../utils/passport.util');
-const passport = require('passport');
+﻿const express = require("express");
+const passport = require("passport");
 
-const todo_controller = require('../controllers/todo.controller')
-const label_controller = require('../controllers/label.controller')
-const status_controller = require('../controllers/status.controller')
-const auth_controller = require('../controllers/auth.controller')
+const todoController = require("../controllers/todo.controller");
+const labelController = require("../controllers/label.controller");
+const statusController = require("../controllers/status.controller");
+const authController = require("../controllers/auth.controller");
 
-const requireAuth = passport.authenticate('jwt', {
-    session: false
+const requireAuth = passport.authenticate("jwt", {
+  session: false,
 });
-const requireSignin = passport.authenticate('local', {
-    session: false
+const requireSignin = passport.authenticate("local", {
+  session: false,
 });
 
-const router = express.Router()
+const router = express.Router();
 
 // AUTH ENDPOINTS
-router.get('/authed', requireAuth, function(req, res) {
-    res.send({
-        hi: 'there'
-    });
+router.get("/authed", requireAuth, function (req, res) {
+  res.send({
+    hi: "there",
+  });
 });
-router.post('/signin', requireSignin, auth_controller.signin);
-router.post('/signup', auth_controller.signup);
+router.post("/auth/signin", requireSignin, authController.signin);
+router.post("/auth/signup", authController.signup);
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/auth/google/callback/",
+  passport.authenticate("google", { failureRedirect: "/", session: false }),
+  authController.googleSignin
+);
 // TODO ENDPOINTS
-router.post('/todo', todo_controller.todo_create);
-router.get('/todo', todo_controller.todo_list);
+router.post("/todo", requireAuth, todoController.todoCreate);
+router.get("/todo", requireAuth, todoController.todoList);
+router.delete("/todo/:tid", requireAuth, todoController.todoDelete);
 // LABEL ENDPOINTS
-router.post('/label', label_controller.label_create);
-router.get('/label', label_controller.label_list);
+router.post("/label", requireAuth, labelController.labelCreate);
+router.get("/label", requireAuth, labelController.labelList);
 // STATUS ENDPOINTS
-router.post('/status', status_controller.status_create);
-router.get('/status', status_controller.status_list);
+router.post("/status", requireAuth, statusController.statusCreate);
+router.get("/status", requireAuth, statusController.statusList);
 
-module.exports = router
+module.exports = router;
