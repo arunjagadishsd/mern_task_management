@@ -21,20 +21,9 @@ const App = () => {
                     path="/token"
                     component={() => <Token setToken={setToken} />}
                 />
-                <Route
-                    exact
-                    path="/"
-                    render={() =>
-                        isAuthenticated ? (
-                            <Home token={token} />
-                        ) : (
-                            <Redirect to="/login" />
-                        )
-                    }
-                />
+                <Route exact path="/" component={Home} />
             </Switch>
         </React.Fragment>
     );
 };
-
 export default App;

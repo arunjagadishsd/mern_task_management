@@ -22,11 +22,14 @@ const Home = ({ token }) => {
     const [query, setQuery] = React.useState({});
     const [open, setOpen] = React.useState(false);
     const getItems = (url) => {
-        let promiseList = fetch(`http://localhost:3001/api/${url}`, {
-            headers: {
-                Authorization: `${token}`,
-            },
-        }).then((response) => {
+        let promiseList = fetch(
+            `https://frozen-scrubland-45920.herokuapp.com/api/${url}`,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        ).then((response) => {
             if (!response.ok) {
                 throw Error(response.statusText);
             }

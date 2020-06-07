@@ -78,7 +78,10 @@ const Navbar = ({
     const [isPriorityOpen, setisPriorityOpen] = React.useState(false);
 
     const googleSignin = () => {
-        window.open("http://localhost:3001/api/auth/google", "_self");
+        window.open(
+            "https://frozen-scrubland-45920.herokuapp.com/api/auth/google",
+            "_self"
+        );
     };
     const handleLabelOpen = () => {
         setisLabelOpen(!isLabelOpen);

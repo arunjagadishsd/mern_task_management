@@ -55,25 +55,31 @@ const Form = ({
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isEdit) {
-            await fetch(`http://localhost:3001/api/todo/${todo._id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `${token}`,
-                },
-                body: JSON.stringify(todo), // body data type must match "Content-Type" header
-            });
+            await fetch(
+                `https://frozen-scrubland-45920.herokuapp.com/api/todo/${todo._id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `${token}`,
+                    },
+                    body: JSON.stringify(todo), // body data type must match "Content-Type" header
+                }
+            );
             setIsEdit(false);
             getTodo();
         } else {
-            await fetch("http://localhost:3001/api/todo", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `${token}`,
-                },
-                body: JSON.stringify(todo), // body data type must match "Content-Type" header
-            });
+            await fetch(
+                "https://frozen-scrubland-45920.herokuapp.com/api/todo",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `${token}`,
+                    },
+                    body: JSON.stringify(todo), // body data type must match "Content-Type" header
+                }
+            );
             getTodo();
         }
     };

@@ -77,5 +77,5 @@ exports.googleSignin = async (req, res) => {
     });
     token = tokenForUser(createdUser);
   }
-  res.redirect(`http://localhost:3000/token?token=${token}`);
+  res.redirect(`/token?token=${token}`);
 };
