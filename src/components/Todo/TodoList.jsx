@@ -2,7 +2,7 @@
 import { Box } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import React, { useState } from "react";
 import CONSTANTS from "../../constants";
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TodoList = ({ open }) => {
+const TodoList = ({ open, token }) => {
     const [checked, setChecked] = React.useState([0]);
     const [items, setItems] = useState([]);
     const [warningMessage, setWarningMessage] = useState({
@@ -59,7 +59,11 @@ const TodoList = ({ open }) => {
     };
 
     const getItems = () => {
-        let promiseList = fetch(CONSTANTS.ENDPOINT.LIST).then((response) => {
+        let promiseList = fetch(CONSTANTS.ENDPOINT.LIST, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        }).then((response) => {
             if (!response.ok) {
                 throw Error(response.statusText);
             }
@@ -70,7 +74,10 @@ const TodoList = ({ open }) => {
     };
 
     const deleteItem = (item) => {
-        fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, { method: "DELETE" })
+        fetch(`${CONSTANTS.ENDPOINT.LIST}/${item._id}`, {
+            method: "DELETE",
+            headers: { Authorization: token },
+        })
             .then((response) => {
                 if (!response.ok) {
                     throw Error(response.statusText);
@@ -132,6 +139,7 @@ const TodoList = ({ open }) => {
     React.useEffect(() => {
         getItems()
             .then((list) => {
+                console.log("list", list);
                 setItems(list);
             })
             .catch((error) => ({
@@ -156,6 +164,7 @@ const TodoList = ({ open }) => {
                                 <TodoForm
                                     addItem={addItem}
                                     setWarningMessage={setWarningMessage}
+                                    token={token}
                                 />
                             </div>
                             <List>
@@ -167,9 +176,10 @@ const TodoList = ({ open }) => {
                                             key={item._id}
                                             item={item}
                                             labelId={labelId}
-                                            deleteItem={deleteItem}
+                                            deleteItem={() => deleteItem(item)}
                                             handleToggle={handleToggle}
                                             checked={checked}
+                                            token={token}
                                         />
                                     );
                                 })}

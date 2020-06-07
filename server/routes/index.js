@@ -33,13 +33,14 @@ router.get(
   authController.googleSignin
 );
 // TODO ENDPOINTS
-router.post("/todo", todoController.todoCreate);
-router.get("/todo", todoController.todoList);
+router.post("/todo", requireAuth, todoController.todoCreate);
+router.get("/todo", requireAuth, todoController.todoList);
+router.delete("/todo/:tid", requireAuth, todoController.todoDelete);
 // LABEL ENDPOINTS
-router.post("/label", labelController.labelCreate);
-router.get("/label", labelController.labelList);
+router.post("/label", requireAuth, labelController.labelCreate);
+router.get("/label", requireAuth, labelController.labelList);
 // STATUS ENDPOINTS
-router.post("/status", statusController.statusCreate);
-router.get("/status", statusController.statusList);
+router.post("/status", requireAuth, statusController.statusCreate);
+router.get("/status", requireAuth, statusController.statusList);
 
 module.exports = router;

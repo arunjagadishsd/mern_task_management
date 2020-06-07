@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
 import TodoList from "../Todo/TodoList";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -9,7 +9,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
 }));
-const Home = () => {
+// eslint-disable-next-line react/prop-types
+const Home = ({ token }) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -26,8 +27,9 @@ const Home = () => {
                 open={open}
                 handleDrawerOpen={handleDrawerOpen}
                 handleDrawerClose={handleDrawerClose}
+                token={token}
             />
-            <TodoList open={open} />
+            <TodoList open={open} token={token} />
         </div>
     );
 };

@@ -1,23 +1,34 @@
-﻿import React from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+﻿import React, { useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home/Home";
 import Login from "./components/Auth/Login";
-import queryString from "query-string";
+import Token from "./components/Auth/Token";
 
 const App = () => {
-    const history = useHistory();
-    const { token } = queryString.parse(window.location.search);
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    let isAuthenticated;
     if (token) {
-        localStorage.setItem("token", token);
-        history.push("/");
+        isAuthenticated = true;
+    } else {
+        isAuthenticated = false;
     }
     return (
         <React.Fragment>
             <Switch>
-                <Route exact path="/" component={Home} />
-                <Route exact path="/token" component={Home} />
                 <Route path="/login" component={Login} />
+                <Route path="/token" component={Token} setToken={setToken} />
+                <Route
+                    exact
+                    path="/"
+                    render={() =>
+                        isAuthenticated ? (
+                            <Home token={token} />
+                        ) : (
+                            <Redirect to="/login" />
+                        )
+                    }
+                />
             </Switch>
         </React.Fragment>
     );

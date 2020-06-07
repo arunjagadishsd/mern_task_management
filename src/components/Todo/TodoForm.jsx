@@ -2,9 +2,12 @@
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
+import { Chip, Box } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React, { useEffect, useState } from "react";
+import ListIcon from "@material-ui/icons/List";
+import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Label from "./Label";
 import Priority from "./Priority";
 import Status from "./Status";
@@ -17,7 +20,8 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const Form = () => {
+// eslint-disable-next-line react/prop-types
+const Form = ({ token }) => {
     // const [textField, setTextField] = useState('')
     // const [dueField, setDueField] = useState(new Date())
     const [labels, setLabels] = useState([]);
@@ -32,14 +36,16 @@ const Form = () => {
     });
 
     const getItems = (url) => {
-        let promiseList = fetch(`http://localhost:3001/api/${url}`).then(
-            (response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-                return response.json();
+        let promiseList = fetch(`http://localhost:3001/api/${url}`, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
             }
-        );
+            return response.json();
+        });
         return promiseList;
     };
 
@@ -61,6 +67,9 @@ const Form = () => {
         const { name, value } = e.target;
         setTodo({ ...todo, [name]: value });
     };
+    const handleDelete = (name) => () => {
+        setTodo({ ...todo, [name]: null });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,6 +77,7 @@ const Form = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`,
             },
             body: JSON.stringify(todo), // body data type must match "Content-Type" header
         });
@@ -79,15 +89,60 @@ const Form = () => {
         <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>
                 <Grid item xs={10}>
-                    <TextField
-                        id="outlined-full-width"
-                        name="text"
-                        placeholder="e.g. Read every day @goals #learning"
-                        onChange={handleChange}
-                        value={todo.text}
-                        fullWidth
-                        margin="normal"
-                    />
+                    <Box pb={2}>
+                        <TextField
+                            id="outlined-full-width"
+                            name="text"
+                            placeholder="e.g. Read every day @goals #learning"
+                            onChange={handleChange}
+                            value={todo.text}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <Box component="span" p={1}>
+                            Priority:{"  "}
+                            <Chip
+                                color="success"
+                                variant="outlined"
+                                label={todo.priority}
+                                className={classes.chip}
+                            />
+                        </Box>
+                        {todo.label ? (
+                            <Box component="span" pr={1}>
+                                Label:{"  "}
+                                <Chip
+                                    color="secondary"
+                                    variant="outlined"
+                                    icon={<ListIcon />}
+                                    label={
+                                        labels.filter(
+                                            (label) => label._id === todo.label
+                                        )[0].text
+                                    }
+                                    onDelete={handleDelete("label")}
+                                    className={classes.chip}
+                                />
+                            </Box>
+                        ) : null}
+                        {todo.status ? (
+                            <Box component="span" p={1}>
+                                Status:{"  "}
+                                <Chip
+                                    color="secondary"
+                                    variant="outlined"
+                                    icon={<LocalOfferIcon />}
+                                    label={
+                                        status.filter(
+                                            (stat) => stat._id === todo.status
+                                        )[0].text
+                                    }
+                                    onDelete={handleDelete("status")}
+                                    className={classes.chip}
+                                />
+                            </Box>
+                        ) : null}
+                    </Box>
                 </Grid>
                 <Grid item xs={2}>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
