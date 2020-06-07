@@ -31,7 +31,6 @@ const TodoListItem = ({
     status,
 }) => {
     const [isEdit, setIsEdit] = useState(false);
-    console.log("labels", labels);
 
     return (
         <React.Fragment>

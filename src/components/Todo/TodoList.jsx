@@ -64,7 +64,6 @@ const TodoList = ({
         } else {
             newChecked.splice(currentIndex, 1);
         }
-        console.log(newChecked);
         setChecked(newChecked);
     };
 

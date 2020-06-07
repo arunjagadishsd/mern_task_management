@@ -40,14 +40,12 @@ exports.signup = async (req, res, next) => {
     const existingUser = await User.findOne({
       email: email,
     });
-    console.log("existingUser", existingUser);
 
     if (existingUser) {
       return res.status(422).send({
         error: "Email is in use",
       });
     }
-    console.log("b4createdUser");
     const hashedPassword = await hashPassword(password);
     const createdUser = await User.create({
       email,
@@ -55,7 +53,6 @@ exports.signup = async (req, res, next) => {
       firstName,
       lastName,
     });
-    console.log("createdUser", createdUser);
 
     res.json({
       token: tokenForUser(createdUser),

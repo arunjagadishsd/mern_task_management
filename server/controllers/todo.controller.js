@@ -30,13 +30,11 @@ module.exports.todoCreate = async function (req, res) {
 module.exports.todoList = async function (req, res) {
   try {
     const queryParams = req.query;
-    console.log("queryParams", queryParams);
 
     const { user } = req;
     const todoList = await Todo.find({
       $or: [user, { ...queryParams }],
     });
-    console.log(todoList);
     res.json(todoList);
   } catch (error) {
     console.log("error", error);
