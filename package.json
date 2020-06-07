@@ -53,7 +53,7 @@
         "prettier": "^2.0.5"
     },
     "scripts": {
-        "start": "concurrently \"yarn start-frontend ||set HTTPS=true && npm run start-frontend\" \"yarn start-backend || npm run start-backend\"",
+        "start": "npm build && npm run start-backend",
         "start-backend": "node server/server.js",
         "start-frontend": "set HTTPS=true&&react-scripts start",
         "build": "node ./buildScript",
