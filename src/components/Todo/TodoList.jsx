@@ -1,14 +1,15 @@
 ﻿/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from "react";
 import { Box } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import React, { useState } from "react";
 import CONSTANTS from "../../constants";
 import WarningMessage from "../WarningMessage";
 import TodoForm from "./TodoForm";
 import TodoListItem from "./TodoListItem";
+import qs from "query-string";
 
 const drawerWidth = 240;
 
@@ -38,9 +39,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TodoList = ({ open, token }) => {
+const TodoList = ({
+    open,
+    token,
+    labels,
+    status,
+    priorities,
+    items,
+    setItems,
+    query,
+}) => {
     const [checked, setChecked] = React.useState([0]);
-    const [items, setItems] = useState([]);
+
     const [warningMessage, setWarningMessage] = useState({
         warningMessageOpen: false,
         warningMessageText: "",
@@ -58,16 +68,18 @@ const TodoList = ({ open, token }) => {
         setChecked(newChecked);
     };
 
-    const getItems = () => {
-        let promiseList = fetch(CONSTANTS.ENDPOINT.LIST, {
-            headers: {
-                Authorization: `${token}`,
-            },
-        }).then((response) => {
+    const getItems = (query) => {
+        let promiseList = fetch(
+            CONSTANTS.ENDPOINT.LIST + "?" + qs.stringify(query),
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        ).then((response) => {
             if (!response.ok) {
                 throw Error(response.statusText);
             }
-            console.log(response);
             return response.json();
         });
         return promiseList;
@@ -84,8 +96,8 @@ const TodoList = ({ open, token }) => {
                 }
                 return response.json();
             })
-            .then((result) => {
-                setItems(items.filter((item) => item._id !== result._id));
+            .then(() => {
+                getTodo();
             })
             .catch((error) => {
                 setWarningMessage({
@@ -95,58 +107,23 @@ const TodoList = ({ open, token }) => {
             });
     };
 
-    const addItem = (textField) => {
-        // Warning Pop Up if the user submits an empty message
-        if (!textField) {
-            setWarningMessage({
-                warningMessageOpen: true,
-                warningMessageText: CONSTANTS.ERROR_MESSAGE.LIST_EMPTY_MESSAGE,
-            });
-            return;
-        }
-
-        fetch(CONSTANTS.ENDPOINT.LIST, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                text: textField,
-            }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then((itemAdded) => {
-                setItems([itemAdded, ...items]);
-            })
-            .catch((error) =>
-                setWarningMessage({
-                    warningMessageOpen: true,
-                    warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_ADD} ${error}`,
-                })
-            );
-    };
-
     const closeWarningMessage = () => {
         setWarningMessage({
             warningMessageOpen: false,
             warningMessageText: "",
         });
     };
-
-    React.useEffect(() => {
-        getItems()
+    const getTodo = () => {
+        getItems(query)
             .then((list) => {
-                console.log("list", list);
                 setItems(list);
             })
             .catch((error) => ({
                 warningMessageOpen: true,
                 warningMessageText: `${CONSTANTS.ERROR_MESSAGE.LIST_GET} ${error}`,
             }));
-    }, []);
+    };
+    useEffect(() => getTodo(), [query]);
     const classes = useStyles();
 
     return (
@@ -162,9 +139,14 @@ const TodoList = ({ open, token }) => {
                         <Box>
                             <div>
                                 <TodoForm
-                                    addItem={addItem}
                                     setWarningMessage={setWarningMessage}
                                     token={token}
+                                    getTodo={getTodo}
+                                    editTodo={null}
+                                    isEdit={false}
+                                    labels={labels}
+                                    status={status}
+                                    priorities={priorities}
                                 />
                             </div>
                             <List>
@@ -180,6 +162,10 @@ const TodoList = ({ open, token }) => {
                                             handleToggle={handleToggle}
                                             checked={checked}
                                             token={token}
+                                            getTodo={getTodo}
+                                            labels={labels}
+                                            status={status}
+                                            priorities={priorities}
                                         />
                                     );
                                 })}
