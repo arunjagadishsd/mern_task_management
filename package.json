@@ -53,7 +53,7 @@
         "prettier": "^2.0.5"
     },
     "scripts": {
-        "start": "yarn run build && yarn run start-backend",
+        "start": "yarn run build && yarn run start-backend\"",
         "start-backend": "node server/server.js",
         "start-frontend": "set HTTPS=true&&react-scripts start",
         "build": "node ./buildScript",
@@ -61,7 +61,7 @@
         "eject": "react-scripts eject",
         "lint": "eslint src/**/*.js src/**/*.jsx"
     },
-    "proxy": "http://localhost:3001",
+    "proxy": "https://frozen-scrubland-45920.herokuapp.com",
     "browserslist": [
         ">0.2%",
         "not dead",
