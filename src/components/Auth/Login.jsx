@@ -12,9 +12,7 @@ const Login = () => {
     const submit = (e) => {
         e.preventDefault();
     };
-    const googleSignin = () => {
-        window.open("http://localhost:3001/api/auth/google", "_self");
-    };
+
     return (
         <Container>
             <Box
@@ -41,13 +39,6 @@ const Login = () => {
                                 <Box py={1} px={2}>
                                     <Button color="primary" variant="contained">
                                         Login
-                                    </Button>
-                                    <Button
-                                        color="primary"
-                                        variant="contained"
-                                        onClick={googleSignin}
-                                    >
-                                        Google Signin
                                     </Button>
                                 </Box>
                             </form>

@@ -11,7 +11,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import { Checkbox, Typography } from "@material-ui/core";
+import { Checkbox, Typography, Button } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandLess from "@material-ui/icons/ExpandLess";
@@ -77,8 +77,8 @@ const Navbar = ({
     const [isStatusOpen, setisStatusOpen] = React.useState(false);
     const [isPriorityOpen, setisPriorityOpen] = React.useState(false);
 
-    const a = (value) => {
-        console.log(value);
+    const googleSignin = () => {
+        window.open("http://localhost:3001/api/auth/google", "_self");
     };
     const handleLabelOpen = () => {
         setisLabelOpen(!isLabelOpen);
@@ -144,9 +144,12 @@ const Navbar = ({
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
+                    <Typography style={{ flexGrow: 1 }} variant="h6" noWrap>
                         Persistent drawer
                     </Typography>
+                    <Button color="inherit" onClick={googleSignin}>
+                        Google Signin
+                    </Button>
                 </Toolbar>
             </AppBar>
             <Drawer
